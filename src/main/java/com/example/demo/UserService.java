@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,19 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
     @Transactional
     public String signup(UserRequestDto requestDto) {
-        // 존재하는 아이디 여부 먼저 확인
+        // 아이디 존재 여부 확인
         if (userRepository.findByUsername(requestDto.getUsername()) != null) {
-            return "이미 존재하는 아이디입니다.";
+            return "이미 존재하는 아이디 입니다.";
         }
 
-        // 엔티티 생성 및 저장
-        // jwt를 위한 비밀번호 암호화 추가할 것
-        User user = new User(requestDto.getUsername(), requestDto.getPassword(), requestDto.getName());
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+
+        // encodedPassword 저장
+        User user = new User(requestDto.getUsername(), encodedPassword, requestDto.getName());
         userRepository.save(user);
 
-        return "회원가입이 완료되었습니다.";
+        return "회원가입화 완료.";
     }
 }
