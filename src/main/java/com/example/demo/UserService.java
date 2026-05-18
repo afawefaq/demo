@@ -25,6 +25,6 @@ public class UserService {
         User user = new User(requestDto.getUsername(), encodedPassword, requestDto.getName());
         userRepository.save(user);
 
-        return "회원가입화 완료.";
+        return "회원가입 완료.";
     }
 }
